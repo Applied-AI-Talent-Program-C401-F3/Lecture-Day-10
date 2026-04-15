@@ -1,6 +1,6 @@
 # Báo Cáo Cá Nhân — Lab Day 10: Data Pipeline & Observability
 
-**Họ và tên:** Student D  
+**Họ và tên:** Khương Hải Lâm 
 **Vai trò:** Embed / Idempotency Owner  
 **Ngày nộp:** 2026-04-15  
 **Độ dài yêu cầu:** 400–650 từ
@@ -15,7 +15,7 @@
 - `runbook.md`
 
 **Kết nối với thành viên khác:**
-Tôi nhận file CSV đã qua kiểm định từ Student C. Tôi đảm bảo rằng kết quả làm sạch của Student B được phản ánh chính xác trong Vector Store để Student E thực hiện đánh giá retrieval.
+Tôi nhận file CSV đã qua kiểm định từ Hoàng Quốc Hùng, và tôi đảm bảo rằng kết quả làm sạch của Thái Doãn Minh Hải được phản ánh chính xác trong Vector Store để Đặng Tuấn Anh thực hiện đánh giá retrieval.
 
 **Bằng chứng (commit / comment trong code):**
 - Sử dụng `col.upsert` thay vì `col.add` để đảm bảo idempotency.
