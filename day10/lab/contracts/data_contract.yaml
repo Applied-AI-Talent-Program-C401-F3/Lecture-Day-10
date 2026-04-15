@@ -34,7 +34,7 @@ quality_rules:
     severity: "halt"
 
 freshness:
-  measured_at: "publish"  # ingest | cleaned | publish
+  measured_at: "publish" # ingest | cleaned | publish
   sla_hours: 24
   alert_channel: "__TODO__"
 
