@@ -47,7 +47,8 @@ def _log(path: Path, line: str) -> None:
 
 
 def cmd_run(args: argparse.Namespace) -> int:
-    run_id = args.run_id or datetime.now(timezone.utc).strftime("%Y-%m-%dT%H-%MZ")
+    run_id = args.run_id or datetime.now(
+        timezone.utc).strftime("%Y-%m-%dT%H-%MZ")
     raw_path = Path(args.raw)
     if not raw_path.is_file():
         print(f"ERROR: raw file not found: {raw_path}", file=sys.stderr)
@@ -101,7 +102,8 @@ def cmd_run(args: argparse.Namespace) -> int:
 
     latest_exported = ""
     if cleaned:
-        latest_exported = max((r.get("exported_at") or "" for r in cleaned), default="")
+        latest_exported = max(
+            (r.get("exported_at") or "" for r in cleaned), default="")
 
     manifest = {
         "run_id": run_id,
@@ -118,10 +120,12 @@ def cmd_run(args: argparse.Namespace) -> int:
         "chroma_collection": os.environ.get("CHROMA_COLLECTION", "day10_kb"),
     }
     man_path = MAN_DIR / f"manifest_{run_id.replace(':', '-')}.json"
-    man_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
+    man_path.write_text(json.dumps(
+        manifest, ensure_ascii=False, indent=2), encoding="utf-8")
     log(f"manifest_written={man_path.relative_to(ROOT)}")
 
-    status, fdetail = check_manifest_freshness(man_path, sla_hours=float(os.environ.get("FRESHNESS_SLA_HOURS", "24")))
+    status, fdetail = check_manifest_freshness(
+        man_path, sla_hours=float(os.environ.get("FRESHNESS_SLA_HOURS", "24")))
     log(f"freshness_check={status} {json.dumps(fdetail, ensure_ascii=False)}")
 
     log("PIPELINE_OK")
@@ -148,8 +152,10 @@ def cmd_embed_internal(cleaned_csv: Path, *, run_id: str, log) -> bool:
         return True
 
     client = chromadb.PersistentClient(path=db_path)
-    emb = embedding_functions.SentenceTransformerEmbeddingFunction(model_name=model_name)
-    col = client.get_or_create_collection(name=collection_name, embedding_function=emb)
+    emb = embedding_functions.SentenceTransformerEmbeddingFunction(
+        model_name=model_name)
+    col = client.get_or_create_collection(
+        name=collection_name, embedding_function=emb)
 
     ids = [r["chunk_id"] for r in rows]
     # Tránh “mồi cũ” trong top-k: xóa id không còn trong cleaned run này (index = snapshot publish).
@@ -193,8 +199,10 @@ def main() -> int:
     sub = parser.add_subparsers(dest="command", required=True)
 
     p_run = sub.add_parser("run", help="ingest → clean → validate → embed")
-    p_run.add_argument("--raw", default=str(RAW_DEFAULT), help="Đường dẫn CSV raw export")
-    p_run.add_argument("--run-id", default="", help="ID run (mặc định: UTC timestamp)")
+    p_run.add_argument("--raw", default=str(RAW_DEFAULT),
+                       help="Đường dẫn CSV raw export")
+    p_run.add_argument("--run-id", default="",
+                       help="ID run (mặc định: UTC timestamp)")
     p_run.add_argument(
         "--no-refund-fix",
         action="store_true",
@@ -207,7 +215,8 @@ def main() -> int:
     )
     p_run.set_defaults(func=cmd_run)
 
-    p_fr = sub.add_parser("freshness", help="Đọc manifest và kiểm tra SLA freshness")
+    p_fr = sub.add_parser(
+        "freshness", help="Đọc manifest và kiểm tra SLA freshness")
     p_fr.add_argument("--manifest", required=True)
     p_fr.set_defaults(func=cmd_freshness)
 
