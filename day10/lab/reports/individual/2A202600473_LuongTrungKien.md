@@ -1,7 +1,7 @@
 # Báo cáo cá nhân – Monitoring và Docs Owner
 
 ## 1. Vai trò và Trách nhiệm
-Trong lab này, tớ đã đảm nhiệm vai trò là **Monitoring và Docs Owner**. Các trách nhiệm chính bao gồm:
+Trong lab này, tôi đã đảm nhiệm vai trò là **Monitoring và Docs Owner**. Các trách nhiệm chính bao gồm:
 - Đảm bảo tính tươi mới (freshness) của dữ liệu trong pipeline.
 - Phát triển và duy trì các tài liệu kỹ thuật quan trọng như `runbook.md`, `pipeline_architecture.md`, và `data_contract.md`.
 - Thiết lập các cơ chế cảnh báo và giám sát pipeline.
