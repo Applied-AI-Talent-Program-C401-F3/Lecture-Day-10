@@ -36,24 +36,50 @@ def check_manifest_freshness(
     """
     Trả về ("PASS" | "WARN" | "FAIL", detail dict).
 
-    Đọc trường `latest_exported_at` hoặc max exported_at trong cleaned summary.
+    Distinction/Bonus (Day 10): Đo freshness ở 2 ranh giới (boundary):
+    1) Source -> Ingest: latest_exported_at (nguồn) vs run_timestamp (lúc chạy).
+    2) Ingest -> Publish: run_timestamp vs now (hiện tại).
     """
     now = now or datetime.now(timezone.utc)
     if not manifest_path.is_file():
         return "FAIL", {"reason": "manifest_missing", "path": str(manifest_path)}
 
     data: Dict[str, Any] = json.loads(manifest_path.read_text(encoding="utf-8"))
-    ts_raw = data.get("latest_exported_at") or data.get("run_timestamp")
-    dt = parse_iso(str(ts_raw)) if ts_raw else None
-    if dt is None:
-        return "WARN", {"reason": "no_timestamp_in_manifest", "manifest": data}
-
-    age_hours = (now - dt).total_seconds() / 3600.0
+    
+    # Boundary 1: Source to Ingest
+    ts_export = parse_iso(str(data.get("latest_exported_at", "")))
+    ts_run = parse_iso(str(data.get("run_timestamp", "")))
+    
     detail = {
-        "latest_exported_at": ts_raw,
-        "age_hours": round(age_hours, 3),
+        "run_id": data.get("run_id"),
         "sla_hours": sla_hours,
+        "boundaries": {}
     }
-    if age_hours <= sla_hours:
+
+    if not ts_run:
+        return "FAIL", {"reason": "missing_run_timestamp"}
+
+    # B1 Check
+    if ts_export:
+        b1_age = (ts_run - ts_export).total_seconds() / 3600.0
+        detail["boundaries"]["source_to_ingest"] = {
+            "age_hours": round(b1_age, 3),
+            "status": "PASS" if b1_age <= sla_hours else "FAIL"
+        }
+    else:
+        detail["boundaries"]["source_to_ingest"] = {"status": "UNKNOWN", "reason": "no_export_ts"}
+
+    # Boundary 2: Ingest to Publish (Now)
+    b2_age = (now - ts_run).total_seconds() / 3600.0
+    detail["boundaries"]["ingest_to_publish"] = {
+        "age_hours": round(b2_age, 3),
+        "status": "PASS" if b2_age <= sla_hours else "FAIL"
+    }
+
+    # Final logic: PASS only if all PASS or UNKNOWN (B1 is optional if no source TS)
+    statuses = [b["status"] for b in detail["boundaries"].values()]
+    if "FAIL" in statuses:
+        return "FAIL", detail
+    if "PASS" in statuses:
         return "PASS", detail
-    return "FAIL", {**detail, "reason": "freshness_sla_exceeded"}
+    return "WARN", detail
