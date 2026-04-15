@@ -1,16 +1,16 @@
 # Báo Cáo Nhóm — Lab Day 10: Data Pipeline & Data Observability
 
-**Tên nhóm:** ___________  
+**Tên nhóm:** ****\_\_\_****  
 **Thành viên:**
 | Tên | Vai trò (Day 10) | Email |
 |-----|------------------|-------|
-| ___ | Ingestion / Raw Owner | ___ |
-| ___ | Cleaning & Quality Owner | ___ |
-| ___ | Embed & Idempotency Owner | ___ |
-| ___ | Monitoring / Docs Owner | ___ |
+| **_ | Ingestion / Raw Owner | _** |
+| **_ | Cleaning & Quality Owner | _** |
+| **_ | Embed & Idempotency Owner | _** |
+| **_ | Monitoring / Docs Owner | _** |
 
-**Ngày nộp:** ___________  
-**Repo:** ___________  
+**Ngày nộp:** ****\_\_\_****  
+**Repo:** ****\_\_\_****  
 **Độ dài khuyến nghị:** 600–1000 từ
 
 ---
@@ -27,11 +27,11 @@
 
 **Tóm tắt luồng:**
 
-_________________
+---
 
 **Lệnh chạy một dòng (copy từ README thực tế của nhóm):**
 
-_________________
+---
 
 ---
 
@@ -42,8 +42,8 @@ _________________
 ### 2a. Bảng metric_impact (bắt buộc — chống trivial)
 
 | Rule / Expectation mới (tên ngắn) | Trước (số liệu) | Sau / khi inject (số liệu) | Chứng cứ (log / CSV / commit) |
-|-----------------------------------|------------------|-----------------------------|-------------------------------|
-| … | … | … | … |
+| --------------------------------- | --------------- | -------------------------- | ----------------------------- |
+| …                                 | …               | …                          | …                             |
 
 **Rule chính (baseline + mở rộng):**
 
@@ -51,7 +51,7 @@ _________________
 
 **Ví dụ 1 lần expectation fail (nếu có) và cách xử lý:**
 
-_________________
+---
 
 ---
 
@@ -61,11 +61,11 @@ _________________
 
 **Kịch bản inject:**
 
-_________________
+---
 
 **Kết quả định lượng (từ CSV / bảng):**
 
-_________________
+---
 
 ---
 
@@ -73,7 +73,7 @@ _________________
 
 > SLA bạn chọn, ý nghĩa PASS/WARN/FAIL trên manifest mẫu.
 
-_________________
+---
 
 ---
 
@@ -81,7 +81,7 @@ _________________
 
 > Dữ liệu sau embed có phục vụ lại multi-agent Day 09 không? Nếu có, mô tả tích hợp; nếu không, giải thích vì sao tách collection.
 
-_________________
+---
 
 ---
 
