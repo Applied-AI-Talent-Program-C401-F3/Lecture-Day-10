@@ -77,7 +77,15 @@ def clean_rows(
     4) Quarantine: chunk_text rỗng hoặc effective_date rỗng sau chuẩn hoá.
     5) Loại trùng nội dung chunk_text (giữ bản đầu).
     6) Fix stale refund: policy_refund_v4 chứa '14 ngày làm việc' → 7 ngày.
+
+    New Rules (Sprint 2):
+    7) Casing Normalization: Chuyển 'it helpdesk' thành 'IT Helpdesk'.
+    8) Punctuation Cleanup: Bỏ dấu chấm/phẩy dư thừa ở cuối chunk.
+    9) Future Date Check: Quarantine nếu exported_at > hiện tại.
     """
+    import datetime
+    now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
+
     quarantine: List[Dict[str, Any]] = []
     seen_text: set[str] = set()
     cleaned: List[Dict[str, Any]] = []
@@ -91,6 +99,11 @@ def clean_rows(
 
         if doc_id not in ALLOWED_DOC_IDS:
             quarantine.append({**raw, "reason": "unknown_doc_id"})
+            continue
+            
+        # Rule 9: Future Date Check
+        if exported_at and exported_at > now_iso:
+            quarantine.append({**raw, "reason": "future_exported_at", "exported_at": exported_at})
             continue
 
         eff_norm, eff_err = _normalize_effective_date(eff_raw)
@@ -115,13 +128,22 @@ def clean_rows(
             quarantine.append({**raw, "reason": "missing_chunk_text"})
             continue
 
-        key = _norm_text(text)
+        # Rule 7: Casing Normalization
+        fixed_text = text
+        if "it helpdesk" in fixed_text.lower():
+            fixed_text = re.sub(r"(?i)it helpdesk", "IT Helpdesk", fixed_text)
+
+        # Rule 8: Punctuation Cleanup
+        fixed_text = fixed_text.strip()
+        if fixed_text and fixed_text[-1] in ".,;:":
+            fixed_text = fixed_text[:-1].strip() + " [cleaned: trailing_punct]"
+
+        key = _norm_text(fixed_text)
         if key in seen_text:
-            quarantine.append({**raw, "reason": "duplicate_chunk_text"})
+            quarantine.append({**raw, "reason": "duplicate_chunk_text", "cleaned_text": fixed_text})
             continue
         seen_text.add(key)
 
-        fixed_text = text
         if apply_refund_window_fix and doc_id == "policy_refund_v4":
             if "14 ngày làm việc" in fixed_text:
                 fixed_text = fixed_text.replace(
