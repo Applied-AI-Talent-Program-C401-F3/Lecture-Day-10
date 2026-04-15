@@ -112,5 +112,32 @@ def run_expectations(cleaned_rows: List[Dict[str, Any]]) -> Tuple[List[Expectati
         )
     )
 
+    # E7: Document Coverage (Sprint 2)
+    distinct_docs = set(r.get("doc_id") for r in cleaned_rows if r.get("doc_id"))
+    ok7 = len(distinct_docs) >= 3
+    results.append(
+        ExpectationResult(
+            "min_doc_coverage_3",
+            ok7,
+            "halt",
+            f"distinct_docs={len(distinct_docs)}",
+        )
+    )
+
+    # E8: Word Count (Sprint 2)
+    short_words = [
+        r for r in cleaned_rows 
+        if len((r.get("chunk_text") or "").split()) < 5
+    ]
+    ok8 = len(short_words) == 0
+    results.append(
+        ExpectationResult(
+            "chunk_min_words_5",
+            ok8,
+            "warn",
+            f"under_word_count={len(short_words)}",
+        )
+    )
+
     halt = any(not r.passed and r.severity == "halt" for r in results)
     return results, halt
