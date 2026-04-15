@@ -16,7 +16,7 @@
 - `data/raw/`: Phân tích cấu trúc file CSV bẩn để lập bản đồ schema.
 
 **Kết nối với thành viên khác:**
-Tôi cung cấp `run_id` và các tham số đầu vào cho Thái Doãn Minh Hải (Cleaning) và Hoàng Quốc Hùng (Quality). Tôi cũng đảm bảo log được ghi đồng nhất để Student F có thể tổng hợp báo cáo kiến trúc.
+Tôi cung cấp `run_id` và các tham số đầu vào cho Thái Doãn Minh Hải (Cleaning) và Hoàng Quốc Hùng (Quality). Tôi cũng đảm bảo log được ghi đồng nhất để Lương Trung Kiên có thể tổng hợp báo cáo kiến trúc.
 
 **Bằng chứng (commit / comment trong code):**
 
